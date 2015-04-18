@@ -9,6 +9,9 @@ app.debug = True
 oauth = OAuth(app)
 apiUtils = APIUtils()
 
+SPOTIFY_CLIENT_ID=apiUtils.getSpotifyClientID()
+SPOTIFY_SECRET=apiUtils.getSpotifyClientSecret()
+
 app = Flask(__name__)
 file_handler = RotatingFileHandler("/opt/repo/ROOT/log.txt")
 file_handler.setLevel(logging.WARNING)
@@ -16,8 +19,8 @@ app.logger.addHandler(file_handler)
 
 spotify = oauth.remote_app(
     'spotify',
-    consumer_key=apiUtils.getSpotifyClientID(),
-    consumer_secret=apiUtils.getSpotifyClientSecret(),
+    consumer_key=SPOTIFY_CLIENT_ID,
+    consumer_secret=SPOTIFY_SECRET,
     # Change the scope to match whatever it us you need
     # list of scopes can be found in the url below
     # https://developer.spotify.com/web-api/using-scopes/
