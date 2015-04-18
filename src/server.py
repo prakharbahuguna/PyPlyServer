@@ -11,9 +11,6 @@ file_handler = RotatingFileHandler("/opt/repo/ROOT/log.txt")
 file_handler.setLevel(logging.WARNING)
 app.logger.addHandler(file_handler)
 
-with open('/opt/repo/ROOT/test1.txt', 'a') as the_file:
-    the_file.write('TEST')
-
 @app.route('/')
 def hello_world():
     return 'Hello World!'
