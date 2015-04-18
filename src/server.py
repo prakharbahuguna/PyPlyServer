@@ -156,10 +156,11 @@ def party(partyId):
         return json.dumps({'success': True, 'playlist_prompt': True}), 200, {'ContentType': 'application/json'}
 
 
-@app.route('/playlist/<party>/<plist>')
-def playlist(party, plist):
+@app.route('/playlist/<party>/<plist_uri>')
+def playlist(party, plist_uri):
     sp = spotipy.Spotify(auth=get_spotify_oauth_token())
     userId = sp.current_user().data['id']
+    plist = plist_uri.split(':')[-1]
 
     results = sp.user_playlist_tracks(user=userId, playlist_id=plist, fields='tracks(items(track(uri)))')['tracks']
     for track in results:
