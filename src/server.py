@@ -7,6 +7,7 @@ from apiUtils import APIUtils
 app = Flask(__name__)
 app.debug = True
 app.secret_key = 'development'
+
 oauth = OAuth(app)
 apiUtils = APIUtils()
 
@@ -63,11 +64,11 @@ def spotify_authorized():
 
     session['oauth_token'] = (resp['access_token'], '')
     me = spotify.get('/me')
-    return 'Logged in as id={0} name={1} redirect={2}'.format(
-        me.data['id'],
-        me.data['name'],
-        request.args.get('next')
-    )
+    return me #'Logged in as id={0} name={1} redirect={2}'.format(
+        #me.data['id'],
+        #me.data['name'],
+        #request.args.get('next')
+    #)
 
 
 @spotify.tokengetter
