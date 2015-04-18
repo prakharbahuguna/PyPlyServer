@@ -74,6 +74,7 @@ class smsBroker():
             playlistEntry = Playlist.get(partyId = partyId, id = givenSong)
             playlistEntry.votes += 1
             playlistEntry.save()
+            zeroMqBroker.sendPlaylistToParty(partyId)
             return "Thank you for your vote"
         else:
             return "Sorry, you have insufficient credit to vote"
