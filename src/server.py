@@ -159,11 +159,9 @@ def party(partyId):
 @app.route('/playlist/<party>/<plist>')
 def playlist(party, plist):
     sp = spotipy.Spotify(auth=get_spotify_oauth_token())
-    userdetails = spotify.get('https://api.spotify.com/v1/me')
-    if userdetails is None:
-        return json.dumps({'success': False}), 200, {'ContentType': 'application/json'}
+    userId = sp.current_user().data['id']
 
-    results = sp.user_playlist_tracks(user=userdetails.data['id'], playlist_id=plist, fields='tracks(items(track(uri)))')['tracks']
+    results = sp.user_playlist_tracks(user=userId, playlist_id=plist, fields='tracks(items(track(uri)))')['tracks']
     for track in results:
         trackUri = track['items']['track']['uri']
         newPlaylist = Playlist.create(spotifyId=trackUri, partyId=party, votes=0, voteskips=0)
