@@ -64,11 +64,11 @@ def spotify_authorized():
 
     session['oauth_token'] = (resp['access_token'], '')
     me = spotify.get('/me')
-    return me #'Logged in as id={0} name={1} redirect={2}'.format(
-        #me.data['id'],
-        #me.data['name'],
-        #request.args.get('next')
-    #)
+    return 'Logged in as id={0} name={1} redirect={2}'.format(
+        me.data['id'],
+        me.data['name'],
+        request.args.get('next')
+    )
 
 
 @spotify.tokengetter
