@@ -4,3 +4,4 @@ pyzmq
 flask_oauthlib
 peewee
 twilio
+MySQLdb
