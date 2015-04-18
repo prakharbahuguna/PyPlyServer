@@ -1,2 +1,4 @@
 requests
 spotipy
+pyzmq
+flask_oauthlib
