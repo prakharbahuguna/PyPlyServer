@@ -16,6 +16,9 @@ apiUtils = APIUtils()
 SPOTIFY_CLIENT_ID=apiUtils.getSpotifyClientID()
 SPOTIFY_SECRET=apiUtils.getSpotifyClientSecret()
 
+FACEBOOK_APP_ID = apiUtils.getFacebookID()
+FACEBOOK_APP_SECRET = apiUtils.getFacebookSecret()
+
 #file_handler = RotatingFileHandler("/opt/repo/ROOT/log.txt")
 #file_handler.setLevel(logging.WARNING)
 #app.logger.addHandler(file_handler)
@@ -36,25 +39,25 @@ spotify = oauth.remote_app(
     authorize_url='https://accounts.spotify.com/authorize'
 )
 
-@app.route('/')
-def hello_world():
-    return "Hello World"
-
 @app.route('/SMS')
 def SMSReceived():
     # Get request fields
     message = request.args.get('Body')
     number = request.args.get('From')
-    smsbroker.processTextMessage(number, message)
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+    processedMessage = smsbroker.processTextMessage(number, message)
+    return processedMessage
+
+@app.route('/')
+def index():
+    return "Hello"
 
 @app.route('/spotify')
-def index():
+def spotifyindex():
     return redirect(url_for('login'))
 
 
-@app.route('/login')
-def login():
+@app.route('/spotifylogin')
+def spotifylogin():
     callback = url_for(
         'spotify_authorized',
         next=request.args.get('next') or request.referrer or None,
@@ -74,7 +77,7 @@ def spotify_authorized():
     if isinstance(resp, OAuthException):
         return 'Access denied: {0}'.format(resp.message)
 
-    session['oauth_token'] = (resp['access_token'], '')
+    session['spotify_token'] = (resp['access_token'], '')
     userdetails = spotify.get('https://api.spotify.com/v1/me')
     if userdetails is None:
         return 'Could not find account'
@@ -86,15 +89,47 @@ def spotify_authorized():
 
 @spotify.tokengetter
 def get_spotify_oauth_token():
-    return session.get('oauth_token')
+    return session.get('spotify_token')
 
+facebook = oauth.remote_app('facebook',
+    base_url='https://graph.facebook.com/',
+    request_token_url=None,
+    access_token_url='/oauth/access_token',
+    authorize_url='https://www.facebook.com/dialog/oauth',
+    consumer_key=FACEBOOK_APP_ID,
+    consumer_secret=FACEBOOK_APP_SECRET,
+    request_token_params={'scope': ['email', 'user_likes'] }
+)
 
-app.route('/SMS')
-def SMSReceived():
-    # Get request fields
-    message = request.args.get('Body').split(" ")
-    phoneNumber = request.args.get('From')
-    return 200
+@facebook.tokengetter
+def get_facebook_token(token=None):
+    return session.get('facebook_token')
+
+@app.route('/facebooklogin')
+def facebooklogin():
+    callback = url_for(
+        'facebook_authorized',
+        next=request.args.get('next') or request.referrer or None,
+        _external=True
+    )
+    print callback
+    return facebook.authorize(callback=callback)
+
+@app.route('/facebook-authorized')
+@facebook.authorized_handler
+def facebook_authorized(resp):
+    next_url = request.args.get('next') or url_for('index')
+    if resp is None:
+        return redirect(next_url)
+
+    print resp
+
+    session['facebook_token'] = (
+        resp['access_token'],
+    )
+    #session['facebook_user'] = resp['screen_name']
+
+    return redirect(next_url)
 
 if __name__ == '__main__':
     app.run()

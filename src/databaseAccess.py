@@ -7,6 +7,7 @@ db.connect()
 class User(peewee.Model):
     partyId = peewee.IntegerField()
     mobileNumber = peewee.CharField()
+    credit = peewee.IntegerField()
 
     class Meta:
         database = db
