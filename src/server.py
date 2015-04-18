@@ -3,7 +3,7 @@ from flask_oauthlib.client import OAuth, OAuthException
 import logging
 from logging.handlers import RotatingFileHandler
 from apiUtils import APIUtils
-import smsBroker
+from smsBroker import *
 
 app = Flask(__name__)
 app.debug = True
@@ -19,7 +19,7 @@ file_handler = RotatingFileHandler("/opt/repo/ROOT/log.txt")
 file_handler.setLevel(logging.WARNING)
 app.logger.addHandler(file_handler)
 
-smsbroker = smsBroker()
+smsbroker = SmsBroker()
 
 spotify = oauth.remote_app(
     'spotify',
