@@ -10,7 +10,8 @@ class SmsBrokerUnitTests(unittest.TestCase):
         body = "Test"
         number = "%2B447903120756"
         smsBroker = SmsBroker()
-        print smsBroker.processTextMessage(number, body)
+        processedMessage = smsBroker.processTextMessage(number, body)
+        assert processedMessage
 
 if __name__ == '__main__':
     unittest.main()
