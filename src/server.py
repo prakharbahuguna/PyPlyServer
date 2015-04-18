@@ -68,7 +68,7 @@ def spotify_authorized():
         return 'Could not find account'
     return 'Logged in as id={0} name={1} redirect={2}'.format(
         userdetails.data['id'],
-        userdetails.data['name'],
+        userdetails.data['product'],
         request.args.get('next')
     )
 
