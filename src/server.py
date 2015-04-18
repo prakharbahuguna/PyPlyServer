@@ -42,9 +42,9 @@ def hello_world():
 @app.route('/SMS')
 def SMSReceived():
     # Get request fields
-    message = request.args.get('Body').split(" ")
-    message = message[0].lower()
-    print message
+    message = request.args.get('Body')
+    number = request.args.get('From')
+    smsbroker.processTextMessage(number, message)
     return 200
 
 @app.route('/spotify')
