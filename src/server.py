@@ -45,8 +45,8 @@ def SMSReceived():
     # Get request fields
     message = request.args.get('Body')
     number = request.args.get('From')
-    smsbroker.processTextMessage(number, message)
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+    processedMessage = smsbroker.processTextMessage(number, message)
+    return processedMessage
 
 @app.route('/spotify')
 def index():

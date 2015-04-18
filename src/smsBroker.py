@@ -20,17 +20,20 @@ class smsBroker():
         if len(messageParts) > 1:
             arguments = messageParts[1]
         if verb == 'register':
-            self.registerUser(givenNumber, arguments)
+            processedMessage = self.registerUser(givenNumber, arguments)
         if verb == 'vote':
-            self.incrementVoteCount(givenNumber, arguments)
+            processedMessage = self.incrementVoteCount(givenNumber, arguments)
         if verb == 'playlist':
-            self.textPlaylistToUser(givenNumber)
+            processedMessage = self.textPlaylistToUser(givenNumber)
         if verb == 'pause':
-            self.pauseParty(givenNumber)
+            processedMessage = self.pauseParty(givenNumber)
         if verb == 'voteskip':
-            self.skipCurrentTrack(givenNumber)
+            processedMessage = self.skipCurrentTrack(givenNumber)
         if verb == 'preview':
-            self.sendTrackPreview(givenNumber, arguments)
+            processedMessage = self.sendTrackPreview(givenNumber, arguments)
+        if not processedMessage:
+            processedMessage = "Placeholder message"
+        return processedMessage
 
     def textPlaylistToUser(self, givenNumber):
         userParty = self.getPartyId(givenNumber)
@@ -43,11 +46,7 @@ class smsBroker():
         print toText
 
     def registerUser(self, phoneNumber, partyId):
-        user = None
-        try:
-            user = User.get(User.mobileNumber == phoneNumber)
-        except User.DoesNotExist:
-            user = None
+        user = self.getUser(phoneNumber)
         # If we've already got the correct details - nothing needs to be done
         if user and user.partyId == partyId:
             pass
@@ -55,14 +54,29 @@ class smsBroker():
         if user:
             user.delete()
         # Now insert a new user entry
-        newUser = User.create(mobileNumber = phoneNumber, partyId = partyId)
+        newUser = User.create(mobileNumber = phoneNumber, partyId = partyId, credit=10)
         newUser.save()
+        return "You have been successfully registered for the party"
+
+    def decrementUserCredit(self, phoneNumber):
+        # Mhhhh all this user stuff needs cleaning up
+        user = self.getUser(phoneNumber)
+        if user and user.credit > 0:
+            user.credit -= 1
+            return True
+        return False
 
     def incrementVoteCount(self, givenNumber, givenSong):
-        partyId = self.getPartyId(givenNumber)
-        playlistEntry = Playlist.get(partyId = partyId, id = givenSong)
-        playlistEntry.votes += 1
-        playlistEntry.save()
+        if self.decrementUserCredit(givenNumber):
+            partyId = self.getPartyId(givenNumber)
+            if partyId is None:
+                return "You must register for a party before you can vote on its playlist"
+            playlistEntry = Playlist.get(partyId = partyId, id = givenSong)
+            playlistEntry.votes += 1
+            playlistEntry.save()
+            return "Thank you for your vote"
+        else:
+            return "Sorry, you have insufficient credit to vote"
 
     def pauseParty(self, givenNumber):
         partyId = self.getPartyId(givenNumber)
@@ -72,8 +86,17 @@ class smsBroker():
         partyId = self.getPartyId(givenNumber)
         zeroMqBroker.voteSkip(partyId)
 
+    def getUser(self, givenNumber):
+        try:
+            user = User.get(mobileNumber = givenNumber)
+        except User.DoesNotExist:
+            return None
+        return user
+
     def getPartyId(self, givenNumber):
-        user = User.get(mobileNumber = givenNumber)
+        user = self.getUser(givenNumber)
+        if not user:
+            return None
         return user.partyId
 
     def getSpotifyIdFromTrackId(self, givenTrackId):
