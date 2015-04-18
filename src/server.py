@@ -63,8 +63,10 @@ def spotify_authorized():
         return 'Access denied: {0}'.format(resp.message)
 
     session['oauth_token'] = (resp['access_token'], '')
-    me = spotify.get('https://api.spotify.com/v1/me')
-    return 'Logged in'
+    userdetails = spotify.get('https://api.spotify.com/v1/me')
+    if userdetails is None:
+        return 'Could not find account'
+    return userdetails
 
 
 @spotify.tokengetter
