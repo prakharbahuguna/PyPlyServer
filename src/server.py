@@ -36,7 +36,7 @@ spotify = oauth.remote_app(
 def hello_world():
     return "Hello World"
 
-app.route('/SMS')
+@app.route('/SMS')
 def SMSReceived():
     # Get request fields
     message = request.args.get('Body').split(" ")
