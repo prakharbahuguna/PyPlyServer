@@ -76,17 +76,13 @@ def get_spotify_oauth_token():
     return session.get('oauth_token')
 
 
-@app.route('/sms', methods=['POST'])
-def sms():
-    print request
-    print "SDSADSD"
-    print request.data
-    print "BOOP"
-    print
-    #message = request.args.get('Body').split(" ")
-    #message[0] = message[0].lower()
-    #sms = SMS(givenMessage=message, givenNumber=request.args.get('From'))
-    return
+app.route('/SMS')
+def SMSReceived():
+    # Get request fields
+    message = request.args.get('Body').split(" ")
+    message = message[0].lower()
+    print message
+    return 200
 
 if __name__ == '__main__':
     app.run()
