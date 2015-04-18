@@ -12,7 +12,7 @@ class APIUtilsUnittests(unittest.TestCase):
 
     def test_spotify_api_info(self):
         apiUtils = APIUtils()
-        apiInfo = json.load(open('data/API_info'))
+        apiInfo = json.load(open('src/data/API_info'))
 
         self.assertEqual(apiInfo, apiUtils.getAPI_JSON(), "Unexpected JSON file")
 
