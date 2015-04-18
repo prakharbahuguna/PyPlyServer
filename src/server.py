@@ -39,6 +39,14 @@ spotify = oauth.remote_app(
 def hello_world():
     return "Hello World"
 
+@app.route('/SMS')
+def SMSReceived():
+    # Get request fields
+    message = request.args.get('Body').split(" ")
+    message = message[0].lower()
+    print message
+    return 200
+
 @app.route('/spotify')
 def index():
     return redirect(url_for('login'))
@@ -85,7 +93,6 @@ def SMSReceived():
     # Get request fields
     message = request.args.get('Body').split(" ")
     phoneNumber = request.args.get('From')
-    smsbroker.processTextMessage(phoneNumber, message)
     return 200
 
 if __name__ == '__main__':
