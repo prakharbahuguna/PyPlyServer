@@ -2,5 +2,7 @@
     "spotifyClientID": "81b53ad243704f13984a3a1362c7382f",
     "spotifyClientSecret": "a521f01371b14c11a30f077796f439a0",
     "spotifyRedirectURI": "http://pyply.j.layershift.co.uk/spotifyToken",
-    "spotifyTokenURL": "https://accounts.spotify.com/api/token"
+    "spotifyTokenURL": "https://accounts.spotify.com/api/token",
+    "facebookSecret": "8079599619e66fe7b82775f3a446e39c",
+    "facebookID": "436822909828046"
 }

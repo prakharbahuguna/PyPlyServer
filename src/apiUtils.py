@@ -30,6 +30,12 @@ class APIUtils():
     def getSpotifyTokenURL(self):
         return self.apiInfo["spotifyTokenURL"]
 
+    def getFacebookID(self):
+        return self.apiInfo["facebookID"]
+
+    def getFacebookSecret(self):
+        return self.apiInfo["facebookSecret"]
+
     def getSpotifyToken(self, user):
         return util.prompt_for_user_token(username=user, scope="playlist-modify-public", client_id=self.apiInfo["spotifyClientID"],
                                           client_secret=self.apiInfo["spotifyClientSecret"], redirect_uri=self.apiInfo["spotifyRedirectURI"])
