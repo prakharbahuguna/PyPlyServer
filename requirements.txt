@@ -1,2 +1,3 @@
 requests
 spotipy
+flask_oauthlib
