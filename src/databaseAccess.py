@@ -21,6 +21,15 @@ class Playlist(peewee.Model):
     class Meta:
         database = db
 
+class UserLikes(peewee.Model):
+    userID = peewee.CharField()
+    artistURI = peewee.CharField()
+
+    class Meta:
+        database = db
+
+#UserLikes.create_table()
+
 # User.drop_table()
 # User.create_table()
 # Playlist.update()
