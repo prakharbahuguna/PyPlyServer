@@ -15,6 +15,7 @@ class UserLikesBroker():
             artistURIs = self.getArtistURIs(artists)
 
             for uri in artistURIs:
+                print user
                 userlike = UserLikes.create(userID=user,artistURI=uri)
                 userlike.save()
 
