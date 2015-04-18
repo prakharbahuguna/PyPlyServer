@@ -6,8 +6,9 @@ import spotipy.util as util
 import sys
 import os
 
-this_dir, this_filename = os.path.split(__file__)
-DATA_PATH = os.path.join(this_dir, "data", "data/API_info")
+datapath = os.path.dirname(os.path.realpath(__file__)) + '/data'
+sys.path.insert(0, datapath)
+DATA_PATH = os.path.join(datapath, "API_info")
 
 class APIUtils():
 

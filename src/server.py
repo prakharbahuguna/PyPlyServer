@@ -27,7 +27,7 @@ def spotify_token():
         "code": str(auth_token),
         "redirect_uri": apiUtils.getSpotifyRedirectURI()
     }
-    base64encoded = base64.b64encode("{}:{}".format((), apiUtils.getSpotifyClientID(), apiUtils.getSpotifyClientSecret))
+    base64encoded = base64.b64encode("{}:{}".format(apiUtils.getSpotifyClientID(), apiUtils.getSpotifyClientSecret()))
     headers = {"Authorization": "Basic {}".format(base64encoded)}
     post_request = requests.post(apiUtils.getSpotifyTokenURL(), data=code_payload, headers=headers)
 
