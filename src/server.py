@@ -80,8 +80,7 @@ app.route('/SMS')
 def SMSReceived():
     # Get request fields
     message = request.args.get('Body').split(" ")
-    message = message[0].lower()
-    print message
+    phoneNumber = request.args.get('From')
     return 200
 
 if __name__ == '__main__':
