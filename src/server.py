@@ -66,8 +66,11 @@ def spotify_authorized():
     userdetails = spotify.get('https://api.spotify.com/v1/me')
     if userdetails is None:
         return 'Could not find account'
-    return userdetails
-
+    return 'Logged in as id={0} name={1} redirect={2}'.format(
+        userdetails.data['id'],
+        userdetails.data['name'],
+        request.args.get('next')
+    )
 
 @spotify.tokengetter
 def get_spotify_oauth_token():
