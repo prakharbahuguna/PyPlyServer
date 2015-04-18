@@ -2,10 +2,14 @@ __author__ = 'georgevanburgh'
 
 from databaseAccess import *
 import zeroMqBroker
+import spotipy
+from twilioBroker import TwilioBroker
 
 class smsBroker():
 
     def __init__(self):
+        self.mySpotipy = spotipy.Spotify()
+        self.twilioBroker = TwilioBroker()
         if not zeroMqBroker.isInit():
             zeroMqBroker.init()
 
@@ -25,6 +29,8 @@ class smsBroker():
             self.pauseParty(givenNumber)
         if verb == 'voteskip':
             self.skipCurrentTrack(givenNumber)
+        if verb == 'preview':
+            self.sendTrackPreview(givenNumber, arguments)
 
     def textPlaylistToUser(self, givenNumber):
         userParty = self.getPartyId(givenNumber)
@@ -32,7 +38,8 @@ class smsBroker():
         toText = ""
         for item in playlist:
             #TODO: Convert Spotify URIs to Artist:Songname combos
-            toText += "{0}: {1}\n".format(item.get_id(), item.spotifyId)
+            trackInfo = self.mySpotipy.track(item.spotifyId)
+            toText += "{0}: {1} - {2}\n".format(item.get_id(), trackInfo['name'], trackInfo['artists'][0]['name'])
         print toText
 
     def registerUser(self, phoneNumber, partyId):
@@ -69,9 +76,18 @@ class smsBroker():
         user = User.get(mobileNumber = givenNumber)
         return user.partyId
 
+    def getSpotifyIdFromTrackId(self, givenTrackId):
+        song = Playlist.get(id = givenTrackId)
+        return song.spotifyId
+
+    def sendTrackPreview(self, givenNumber, givenTrackId):
+        spotifyId = self.getSpotifyIdFromTrackId(givenTrackId)
+        spotifyData = self.mySpotipy.track(spotifyId)
+        trackUrl = spotifyData['preview_url']
+        self.twilioBroker.playMp3ToUser(givenNumber, trackUrl)
 
 
 
 if __name__ == '__main__':
      underTest = smsBroker()
-     underTest.processTextMessage("07903120756", "vote 1")
+     underTest.sendTrackPreview('07432142620', '4')
