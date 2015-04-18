@@ -3,3 +3,4 @@ spotipy
 pyzmq
 flask_oauthlib
 peewee
+MySQLdb
