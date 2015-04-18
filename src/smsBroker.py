@@ -4,8 +4,9 @@ from databaseAccess import *
 import zeroMqBroker
 import spotipy
 from twilioBroker import TwilioBroker
+from twilio import twiml
 
-class smsBroker():
+class SmsBroker():
 
     def __init__(self):
         self.mySpotipy = spotipy.Spotify()
@@ -17,6 +18,7 @@ class smsBroker():
         messageParts = givenMessage.split()
         verb = messageParts[0].lower()
         arguments = None
+        processedMessage = ""
         if len(messageParts) > 1:
             arguments = messageParts[1]
         if verb == 'register':
@@ -33,7 +35,9 @@ class smsBroker():
             processedMessage = self.sendTrackPreview(givenNumber, arguments)
         if not processedMessage:
             processedMessage = "Placeholder message"
-        return processedMessage
+        tw = twiml.Response()
+        tw.sms(processedMessage)
+        return str(tw), 200
 
     def textPlaylistToUser(self, givenNumber):
         userParty = self.getPartyId(givenNumber)
@@ -113,5 +117,5 @@ class smsBroker():
 
 
 if __name__ == '__main__':
-     underTest = smsBroker()
+     underTest = SmsBroker()
      underTest.sendTrackPreview('07432142620', '4')
