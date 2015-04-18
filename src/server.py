@@ -1,7 +1,4 @@
-from flask import Flask, request
-import requests
-import base64
-import json
+from flask import Flask
 import logging
 from logging.handlers import RotatingFileHandler
 import APIUtils
@@ -16,8 +13,6 @@ with open('/opt/repo/ROOT/test1.txt', 'a') as the_file:
 
 @app.route('/')
 def hello_world():
-    with open('/opt/repo/ROOT/test2.txt', 'a') as the_file:
-        the_file.write('TEST')
     return 'Hello World!'
 
 @app.route('/spotifyToken')
