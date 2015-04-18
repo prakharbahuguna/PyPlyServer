@@ -3,9 +3,11 @@ from flask_oauthlib.client import OAuth, OAuthException
 import logging
 from logging.handlers import RotatingFileHandler
 from apiUtils import APIUtils
+from databaseAccess import Playlist
 import smsBroker
 import json
 from userLikesBroker import UserLikesBroker
+import spotipy
 
 app = Flask(__name__)
 app.debug = True
@@ -14,8 +16,8 @@ app.secret_key = 'development'
 oauth = OAuth(app)
 apiUtils = APIUtils()
 
-SPOTIFY_CLIENT_ID=apiUtils.getSpotifyClientID()
-SPOTIFY_SECRET=apiUtils.getSpotifyClientSecret()
+SPOTIFY_CLIENT_ID = apiUtils.getSpotifyClientID()
+SPOTIFY_SECRET = apiUtils.getSpotifyClientSecret()
 
 FACEBOOK_APP_ID = apiUtils.getFacebookID()
 FACEBOOK_APP_SECRET = apiUtils.getFacebookSecret()
@@ -88,6 +90,7 @@ def spotify_authorized():
         request.args.get('next')
     )
 
+
 @spotify.tokengetter
 def get_spotify_oauth_token():
     return session.get('spotify_token')
@@ -143,6 +146,31 @@ def facebook_authorized(resp):
     userLikesBroker.saveUserLikes(artistNames, uID)
 
     return redirect(next_url)
+
+
+@app.route('/party/<partyId>')
+def party(partyId):
+    if Playlist.select().where(Playlist.partyId == partyId).count() > 0:
+        return json.dumps({'success': True, 'playlist_prompt': False}), 200, {'ContentType': 'application/json'}
+    else:
+        return json.dumps({'success': True, 'playlist_prompt': True}), 200, {'ContentType': 'application/json'}
+
+
+@app.route('/playlist/<party>/<plist>')
+def playlist(party, plist):
+    sp = spotipy.Spotify(auth=get_spotify_oauth_token())
+    userdetails = spotify.get('https://api.spotify.com/v1/me')
+    if userdetails is None:
+        return json.dumps({'success': False}), 200, {'ContentType': 'application/json'}
+
+    results = sp.user_playlist_tracks(user=userdetails.data['id'], playlist_id=plist, fields='tracks(items(track(uri)))')['tracks']
+    for track in results:
+        trackUri = track['items']['track']['uri']
+        newPlaylist = Playlist.create(spotifyId=trackUri, partyId=party, votes=0, voteskips=0)
+        newPlaylist.save()
+
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
 
 if __name__ == '__main__':
     app.run()
