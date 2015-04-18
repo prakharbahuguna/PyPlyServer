@@ -11,7 +11,7 @@ class smsBroker():
         if len(messageParts) > 1:
             arguments = messageParts[1]
         if verb == 'register':
-            registerUser(givenNumber, arguments)
+            self.registerUser(givenNumber, arguments)
 
     def registerUser(self, phoneNumber, partyId):
             user = None
