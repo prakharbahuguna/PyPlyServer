@@ -7,7 +7,7 @@ from apiUtils import APIUtils
 app = Flask(__name__)
 app.debug = True
 oauth = OAuth(app)
-apiUtils = APIUtils
+apiUtils = APIUtils()
 
 app = Flask(__name__)
 file_handler = RotatingFileHandler("/opt/repo/ROOT/log.txt")
