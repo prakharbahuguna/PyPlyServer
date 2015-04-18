@@ -59,7 +59,7 @@ def index():
 
 @app.route('/spotify')
 def spotifyindex():
-    return redirect(url_for('login'))
+    return redirect(url_for('spotifylogin'))
 
 
 @app.route('/spotifylogin')
