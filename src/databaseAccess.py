@@ -15,13 +15,14 @@ class Playlist(peewee.Model):
     spotifyId = peewee.CharField()
     partyId = peewee.IntegerField()
     votes = peewee.IntegerField()
+    voteskips = peewee.IntegerField()
 
     class Meta:
         database = db
 
-#User.drop_table()
-#User.create_table()
-#Playlist.create_table()
+# User.drop_table()
+# User.create_table()
+# Playlist.update()
 # myUser = User.create(partyId = 1, mobileNumber = 2)
 # myUser.save()
 

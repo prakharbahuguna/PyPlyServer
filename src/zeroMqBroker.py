@@ -4,26 +4,31 @@ import zmq
 import json
 import time
 
-class zeroMqBroker:
-    TOPIC_PORT = "5556"
-    LISTEN_PORT = "5557"
-    context = zmq.Context()
-    topicSocket = context.socket(zmq.PUB)
-    listenSocket = context.socket(zmq.SUB)
 
-    def __init__(self):
-        self.topicSocket.bind("tcp://*:%s" % self.TOPIC_PORT)
-        self.listenSocket.bind("tcp://*:%s" % self.LISTEN_PORT)
+TOPIC_PORT = "5556"
+LISTEN_PORT = "5557"
+context = zmq.Context()
+topicSocket = context.socket(zmq.PUB)
+listenSocket = context.socket(zmq.SUB)
 
-    def partyPauseTrack(self, partyId):
-        self.topicSocket.send_string("{0} pause".format(partyId))
+def init():
+    topicSocket.bind("tcp://*:%s" % TOPIC_PORT)
+    listenSocket.bind("tcp://*:%s" % LISTEN_PORT)
 
-    def sendPlaylistToParty(self, partyID, playlist):
-        self.topicSocket.send_string("{} loadPlaylist {}".format(partyID, playlist))
+def isInit():
+    return topicSocket is not None and listenSocket is not None
+
+def partyPauseTrack(partyId):
+    topicSocket.send_string("{0} pause".format(partyId))
+
+def sendPlaylistToParty(partyID, playlist):
+    topicSocket.send_string("{} loadPlaylist {}".format(partyID, playlist))
+
+def voteSkip(partyId):
+    topicSocket.send_string("{} voteskip".format(partyId))
 
 if __name__ == "__main__":
-    test = zeroMqBroker()
     while True:
-        test.sendPlaylistToParty("house1", json.dumps(["uri1","uri2","uri3"], separators=(',', ':')))
+        sendPlaylistToParty("house1", json.dumps(["uri1","uri2","uri3"], separators=(',', ':')))
         print "Sent message!"
         time.sleep(10)

@@ -3,6 +3,7 @@ from flask_oauthlib.client import OAuth, OAuthException
 import logging
 from logging.handlers import RotatingFileHandler
 from apiUtils import APIUtils
+import smsBroker
 
 app = Flask(__name__)
 app.debug = True
@@ -17,6 +18,8 @@ SPOTIFY_SECRET=apiUtils.getSpotifyClientSecret()
 file_handler = RotatingFileHandler("/opt/repo/ROOT/log.txt")
 file_handler.setLevel(logging.WARNING)
 app.logger.addHandler(file_handler)
+
+smsbroker = smsBroker()
 
 spotify = oauth.remote_app(
     'spotify',
@@ -82,6 +85,7 @@ def SMSReceived():
     # Get request fields
     message = request.args.get('Body').split(" ")
     phoneNumber = request.args.get('From')
+    smsbroker.processTextMessage(phoneNumber, message)
     return 200
 
 if __name__ == '__main__':
