@@ -1,5 +1,11 @@
 from flask import Flask
+import logging
+from logging.handlers import RotatingFileHandler
+
 app = Flask(__name__)
+file_handler = RotatingFileHandler("log.txt")
+file_handler.setLevel(logging.WARNING)
+app.logger.addHandler(file_handler)
 
 @app.route('/')
 def hello_world():
