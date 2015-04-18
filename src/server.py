@@ -5,6 +5,7 @@ from logging.handlers import RotatingFileHandler
 from apiUtils import APIUtils
 import smsBroker
 import json
+from userLikesBroker import UserLikesBroker
 
 app = Flask(__name__)
 app.debug = True
@@ -122,12 +123,24 @@ def facebook_authorized(resp):
     if resp is None:
         return redirect(next_url)
 
-    print resp
-
     session['facebook_token'] = (
         resp['access_token'],
     )
-    #session['facebook_user'] = resp['screen_name']
+
+    userResults = facebook.get("me")
+    uID = userResults.data['id']
+
+    musicResults = facebook.get("me/music")
+    data = musicResults.data['data']
+
+    artistNames = []
+
+    for item in data:
+        if item['category'] == 'Musician/band':
+            artistNames.append(item['name'])
+
+    userLikesBroker = UserLikesBroker()
+    userLikesBroker.saveUserLikes(artistNames, uID)
 
     return redirect(next_url)
 
