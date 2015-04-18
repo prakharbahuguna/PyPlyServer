@@ -2,3 +2,4 @@ requests
 spotipy
 pyzmq
 flask_oauthlib
+peewee

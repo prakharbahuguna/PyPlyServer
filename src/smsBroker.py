@@ -11,7 +11,9 @@ class smsBroker():
         if len(messageParts) > 1:
             arguments = messageParts[1]
         if verb == 'register':
-            partyId = arguments
+            registerUser(givenNumber, arguments)
+
+    def registerUser(self, phoneNumber, partyId):
             user = None
             try:
                 user = User.get(User.mobileNumber == givenNumber)
@@ -24,11 +26,11 @@ class smsBroker():
             if user:
                 user.delete()
             # Now insert a new user entry
-            newUser = User.create(mobileNumber = givenNumber, partyId = partyId)
+            newUser = User.create(mobileNumber = phoneNumber, partyId = partyId)
             newUser.save()
 
 
 
-if __name__ == '__main__':
-    underTest = smsBroker()
-    underTest.processTextMessage("07903120756", "reGister 1234")
+# if __name__ == '__main__':
+#     underTest = smsBroker()
+#     underTest.processTextMessage("07903120756", "reGister 1234")
