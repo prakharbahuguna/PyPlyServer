@@ -3,6 +3,10 @@ __author__ = 'matt'
 import json
 import spotipy
 import spotipy.util as util
+import sys
+import os
+
+sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + '../data')
 
 class APIUtils():
 
