@@ -7,7 +7,6 @@ from databaseAccess import Playlist
 import smsBroker
 import json
 from userLikesBroker import UserLikesBroker
-import spotipy
 from twilio import twiml
 
 app = Flask(__name__)
@@ -36,7 +35,7 @@ spotify = oauth.remote_app(
     # Change the scope to match whatever it us you need
     # list of scopes can be found in the url below
     # https://developer.spotify.com/web-api/using-scopes/
-    request_token_params={'scope': 'user-read-email'},
+    request_token_params={'scope': 'playlist-read-private'},
     base_url='https://accounts.spotify.com',
     request_token_url=None,
     access_token_url='/api/token',
@@ -161,15 +160,17 @@ def party(partyId):
 
 @app.route('/playlist/<party>/<plist_uri>')
 def playlist(party, plist_uri):
-    sp = spotipy.Spotify(auth=get_spotify_oauth_token())
-    userId = sp.current_user().data['id']
-    plist = plist_uri.split(':')[-1]
+    uri_params = plist_uri.split(':')
+    userId = uri_params[2]
+    plist = uri_params[-1]
 
-    results = sp.user_playlist_tracks(user=userId, playlist_id=plist, fields='tracks(items(track(uri)))')['tracks']
-    for track in results:
-        trackUri = track['items']['track']['uri']
-        newPlaylist = Playlist.create(spotifyId=trackUri, partyId=party, votes=0, voteskips=0)
-        newPlaylist.save()
+    results = spotify.get('https://api.spotify.com/v1/users/r3loaded/playlists/2JdVPMM8fOMF06aNZiapRD/tracks?fields=items(track(uri))')['items']
+    print(results)
+    for item in results:
+        print(item)
+        trackUri = item['track']['uri']
+        newEntry = Playlist.create(spotifyId=trackUri, partyId=party, votes=0, voteskips=0)
+        newEntry.save()
 
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
