@@ -3,6 +3,7 @@ __author__ = 'georgevanburgh'
 import zmq
 import json
 import time
+from databaseAccess import *
 
 
 TOPIC_PORT = "5556"
@@ -21,14 +22,22 @@ def isInit():
 def partyPauseTrack(partyId):
     topicSocket.send_string("{0} pause".format(partyId))
 
-def sendPlaylistToParty(partyID, playlist):
-    topicSocket.send_string("{} loadPlaylist {}".format(partyID, playlist))
+def sendPlaylistToParty(partyID):
+    playlistToSend = Playlist.select().where(Playlist.partyId == partyID).order_by(Playlist.votes)
+    listToSend = []
+
+    for song in playlistToSend:
+        listToSend.append(song.spotifyId)
+
+    jsonList = json.dumps(listToSend, separators=(',', ':'))
+    print jsonList
+    #topicSocket.send_string("{} loadPlaylist {}".format(partyID, jsonList))
 
 def voteSkip(partyId):
     topicSocket.send_string("{} voteskip".format(partyId))
 
 if __name__ == "__main__":
     while True:
-        sendPlaylistToParty("house1", json.dumps(["uri1","uri2","uri3"], separators=(',', ':')))
+        sendPlaylistToParty("1234")
         print "Sent message!"
         time.sleep(10)
