@@ -1,44 +1,76 @@
-from flask import Flask, request
-import requests
-import base64
-import json
+from flask import Flask, redirect, request, url_for, session
+from flask_oauthlib.client import OAuth, OAuthException
 import logging
 from logging.handlers import RotatingFileHandler
 from apiUtils import APIUtils
+
+app = Flask(__name__)
+app.debug = True
+oauth = OAuth(app)
+apiUtils = APIUtils
 
 app = Flask(__name__)
 file_handler = RotatingFileHandler("/opt/repo/ROOT/log.txt")
 file_handler.setLevel(logging.WARNING)
 app.logger.addHandler(file_handler)
 
+spotify = oauth.remote_app(
+    'spotify',
+    consumer_key=apiUtils.getSpotifyClientID(),
+    consumer_secret=apiUtils.getSpotifyClientSecret(),
+    # Change the scope to match whatever it us you need
+    # list of scopes can be found in the url below
+    # https://developer.spotify.com/web-api/using-scopes/
+    request_token_params={'scope': 'user-read-email'},
+    base_url='https://accounts.spotify.com',
+    request_token_url=None,
+    access_token_url='/api/token',
+    authorize_url='https://accounts.spotify.com/authorize'
+)
+
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+    return "Hello World"
 
-@app.route('/spotifyToken')
-def spotify_token():
+@app.route('/spotify')
+def index():
+    return redirect(url_for('login'))
 
-    apiUtils = APIUtils()
 
-    # Auth Step 4: Requests refresh and access tokens
-    auth_token = request.args['code']
-    code_payload = {
-        "grant_type": "authorization_code",
-        "code": str(auth_token),
-        "redirect_uri": apiUtils.getSpotifyRedirectURI()
-    }
-    base64encoded = base64.b64encode("{}:{}".format(apiUtils.getSpotifyClientID(), apiUtils.getSpotifyClientSecret()))
-    headers = {"Authorization": "Basic {}".format(base64encoded)}
-    post_request = requests.post(apiUtils.getSpotifyTokenURL(), data=code_payload, headers=headers)
+@app.route('/login')
+def login():
+    callback = url_for(
+        'spotify_authorized',
+        next=request.args.get('next') or request.referrer or None,
+        _external=True
+    )
+    return spotify.authorize(callback=callback)
 
-    # Auth Step 5: Tokens are Returned to Application
-    response_data = json.loads(post_request.text)
-    access_token = response_data["access_token"]
-    refresh_token = response_data["refresh_token"]
-    token_type = response_data["token_type"]
-    expires_in = response_data["expires_in"]
 
-    return access_token
+@app.route('/login/authorized')
+def spotify_authorized():
+    resp = spotify.authorized_response()
+    if resp is None:
+        return 'Access denied: reason={0} error={1}'.format(
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    if isinstance(resp, OAuthException):
+        return 'Access denied: {0}'.format(resp.message)
+
+    session['oauth_token'] = (resp['access_token'], '')
+    me = spotify.get('/me')
+    return 'Logged in as id={0} name={1} redirect={2}'.format(
+        me.data['id'],
+        me.data['name'],
+        request.args.get('next')
+    )
+
+
+@spotify.tokengetter
+def get_spotify_oauth_token():
+    return session.get('oauth_token')
+
 
 if __name__ == '__main__':
     app.run()
