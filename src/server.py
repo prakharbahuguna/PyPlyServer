@@ -6,13 +6,13 @@ from apiUtils import APIUtils
 
 app = Flask(__name__)
 app.debug = True
+app.secret_key = 'development'
 oauth = OAuth(app)
 apiUtils = APIUtils()
 
 SPOTIFY_CLIENT_ID=apiUtils.getSpotifyClientID()
 SPOTIFY_SECRET=apiUtils.getSpotifyClientSecret()
 
-app = Flask(__name__)
 file_handler = RotatingFileHandler("/opt/repo/ROOT/log.txt")
 file_handler.setLevel(logging.WARNING)
 app.logger.addHandler(file_handler)
