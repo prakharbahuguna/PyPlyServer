@@ -5,7 +5,7 @@ import zeroMqBroker
 import spotipy
 from twilioBroker import TwilioBroker
 
-class smsBroker():
+class SmsBroker():
 
     def __init__(self):
         self.mySpotipy = spotipy.Spotify()
@@ -48,11 +48,11 @@ class smsBroker():
     def registerUser(self, phoneNumber, partyId):
         user = self.getUser(phoneNumber)
         # If we've already got the correct details - nothing needs to be done
-        if user and user.partyId == partyId:
+        if user and user.partyId == int(partyId):
             pass
         # If the user exists without the correct details - delete him/her
         if user:
-            user.delete()
+            user.delete_instance()
         # Now insert a new user entry
         newUser = User.create(mobileNumber = phoneNumber, partyId = partyId, credit=10)
         newUser.save()
@@ -113,5 +113,5 @@ class smsBroker():
 
 
 if __name__ == '__main__':
-     underTest = smsBroker()
+     underTest = SmsBroker()
      underTest.sendTrackPreview('07432142620', '4')
