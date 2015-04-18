@@ -63,12 +63,8 @@ def spotify_authorized():
         return 'Access denied: {0}'.format(resp.message)
 
     session['oauth_token'] = (resp['access_token'], '')
-    me = spotify.get('/me')
-    return 'Logged in as id={0} name={1} redirect={2}'.format(
-        me.data['id'],
-        me.data['name'],
-        request.args.get('next')
-    )
+    me = spotify.get('https://api.spotify.com/v1/me')
+    return 'Logged in'
 
 
 @spotify.tokengetter
