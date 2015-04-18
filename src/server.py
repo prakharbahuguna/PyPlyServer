@@ -1,7 +1,7 @@
 from flask import Flask
 import logging
 from logging.handlers import RotatingFileHandler
-import APIUtils
+from apiUtils import APIUtils
 
 app = Flask(__name__)
 file_handler = RotatingFileHandler("/opt/repo/ROOT/log.txt")
@@ -38,7 +38,7 @@ def spotify_token():
     token_type = response_data["token_type"]
     expires_in = response_data["expires_in"]
 
-    return
+    return access_token
 
 if __name__ == '__main__':
     app.run()
