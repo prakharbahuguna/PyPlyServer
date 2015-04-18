@@ -8,6 +8,7 @@ import smsBroker
 import json
 from userLikesBroker import UserLikesBroker
 import spotipy
+from twilio import twiml
 
 app = Flask(__name__)
 app.debug = True
@@ -48,7 +49,9 @@ def SMSReceived():
     message = request.args.get('Body')
     number = request.args.get('From')
     processedMessage = smsbroker.processTextMessage(number, message)
-    return processedMessage
+    tw = twiml.Response()
+    tw.sms(processedMessage)
+    return str(tw), 200
 
 @app.route('/')
 def index():
