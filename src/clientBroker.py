@@ -7,4 +7,5 @@ class ClientBroker:
         return
 
     def marshalSpotifyURIsToJSON(self, spotifyURIs):
-        return json.dumps(spotifyURIs)
+        return json.dumps(spotifyURIs, separators=(',', ':'))
+

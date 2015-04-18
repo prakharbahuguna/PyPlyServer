@@ -1,7 +1,8 @@
 __author__ = 'georgevanburgh'
 
 import zmq
-
+import json
+import time
 
 class zeroMqBroker:
     TOPIC_PORT = "5556"
@@ -17,7 +18,12 @@ class zeroMqBroker:
     def partyPauseTrack(self, partyId):
         self.topicSocket.send_string("{0} pause".format(partyId))
 
+    def sendPlaylistToParty(self, partyID, playlist):
+        self.topicSocket.send_string("{} loadPlaylist {}".format(partyID, playlist))
+
 if __name__ == "__main__":
     test = zeroMqBroker()
     while True:
-        test.partySkipTrack("house1")
+        test.sendPlaylistToParty("house1", json.dumps(["uri1","uri2","uri3"], separators=(',', ':')))
+        print "Sent message!"
+        time.sleep(10)
