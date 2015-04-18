@@ -143,7 +143,7 @@ def facebook_authorized(resp):
             artistNames.append(item['name'])
 
     userLikesBroker = UserLikesBroker()
-    userLikesBroker.saveUserLikes(artistNames, uID)
+    userLikesBroker.saveUserLikes(artists=artistNames, uID=uID)
 
     return redirect(next_url)
 

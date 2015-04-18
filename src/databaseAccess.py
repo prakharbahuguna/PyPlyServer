@@ -22,7 +22,7 @@ class Playlist(peewee.Model):
         database = db
 
 class UserLikes(peewee.Model):
-    userID = peewee.IntegerField()
+    userID = peewee.CharField()
     artistURI = peewee.CharField()
 
     class Meta:

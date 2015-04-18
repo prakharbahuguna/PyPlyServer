@@ -8,15 +8,15 @@ class UserLikesBroker():
     def __init__(self):
         self.spotify = spotipy.Spotify()
 
-    def saveUserLikes(self, artists, user):
+    def saveUserLikes(self, artists, uID):
+        print uID
         try:
-            UserLikes.get(UserLikes.userID == user)
+            UserLikes.get(UserLikes.userID == uID)
         except:
             artistURIs = self.getArtistURIs(artists)
 
             for uri in artistURIs:
-                print user
-                userlike = UserLikes.create(userID=user,artistURI=uri)
+                userlike = UserLikes.create(userID=uID,artistURI=uri)
                 userlike.save()
 
     def getArtistURIs(self, artists):
