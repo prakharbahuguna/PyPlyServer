@@ -24,7 +24,7 @@ FACEBOOK_APP_SECRET = apiUtils.getFacebookSecret()
 #file_handler.setLevel(logging.WARNING)
 #app.logger.addHandler(file_handler)
 
-smsbroker = smsBroker.SmsBroker()
+smsbroker = smsBroker.smsBroker()
 
 spotify = oauth.remote_app(
     'spotify',
