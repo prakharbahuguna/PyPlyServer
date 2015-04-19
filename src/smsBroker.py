@@ -32,6 +32,10 @@ class SmsBroker():
             processedMessage = self.skipCurrentTrack(givenNumber)
         if verb == 'preview':
             processedMessage = self.sendTrackPreview(givenNumber, arguments)
+        if verb == 'credit':
+            processedMessage = self.getUserCredits(givenNumber)
+        if verb == 'help':
+            return self.helpText
         if not processedMessage:
             processedMessage = "Placeholder message"
         return processedMessage
@@ -64,6 +68,7 @@ class SmsBroker():
         user = self.getUser(phoneNumber)
         if user and user.credit > 0:
             user.credit -= 1
+            user.save()
             return True
         return False
 
@@ -111,6 +116,12 @@ class SmsBroker():
         trackUrl = spotifyData['preview_url']
         self.twilioBroker.playMp3ToUser(givenNumber, trackUrl)
 
+    def getUserCredits(self, givenNumber):
+        user = User.get(mobileNumber = givenNumber)
+        toReturn = "You have {} credits remaining".format(user.credit)
+        return toReturn
+
+    helpText = """ Placeholder text for help. """
 
 
 if __name__ == '__main__':
