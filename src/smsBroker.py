@@ -44,7 +44,7 @@ class SmsBroker():
             #TODO: Convert Spotify URIs to Artist:Songname combos
             trackInfo = self.mySpotipy.track(item.spotifyId)
             toText += "{0}: {1} - {2}\n".format(item.get_id(), trackInfo['name'], trackInfo['artists'][0]['name'])
-        print toText
+        return toText
 
     def registerUser(self, phoneNumber, partyId):
         user = self.getUser(phoneNumber)
