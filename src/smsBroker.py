@@ -21,11 +21,11 @@ class SmsBroker():
         if len(messageParts) > 1:
             arguments = messageParts[1:]
         if verb == 'register':
-            processedMessage = self.registerUser(givenNumber, arguments)
+            processedMessage = self.registerUser(givenNumber, arguments[0])
         if verb == 'request':
             processedMessage = self.requestSong(givenNumber, arguments)
         if verb == 'vote':
-            processedMessage = self.incrementVoteCount(givenNumber, arguments)
+            processedMessage = self.incrementVoteCount(givenNumber, arguments[0])
         if verb == 'playlist':
             processedMessage = self.textPlaylistToUser(givenNumber)
         if verb == 'togglePause':
@@ -35,7 +35,7 @@ class SmsBroker():
         if verb == 'voteskip':
             processedMessage = self.skipCurrentTrack(givenNumber)
         if verb == 'preview':
-            processedMessage = self.sendTrackPreview(givenNumber, arguments)
+            processedMessage = self.sendTrackPreview(givenNumber, arguments[0])
         if verb == 'credit':
             processedMessage = self.getUserCredits(givenNumber)
         if verb == 'help':
@@ -63,7 +63,7 @@ class SmsBroker():
         if user:
             user.delete_instance()
         # Now insert a new user entry
-        newUser = User.create(mobileNumber = phoneNumber, partyId = partyId, credit=10)
+        newUser = User.create(mobileNumber = phoneNumber, partyId = partyId, credit = 10, fbUserID = None)
         newUser.save()
         return "You have been successfully registered for the party! To further personalise your experience, please login to Facebook! " \
                "https://pyply.j.layershift.co.uk/facebooklogin"
