@@ -157,6 +157,7 @@ def markTrackAsPlayed(trackId, partyId):
     trackJustPlayed.delete_instance()
     if smsbroker.redisBroker:
         smsbroker.redisBroker.sendPlaylistToParty(partyId)
+    return "Ok"
 
 @app.route('/party/<partyId>')
 def party(partyId):
