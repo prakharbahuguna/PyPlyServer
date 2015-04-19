@@ -27,7 +27,7 @@ class RedisBroker:
 
         jsonList = json.dumps(listToSend, separators=(',', ':'))
         print jsonList
-        self.redisClient.rpush(self.topicName, jsonList)
+        self.redisClient.rpush(self.topicName, "loadPlaylist {}".format(jsonList))
 
     def voteSkip(self, partyId):
         self.redisClient.rpush(self.topicName, "{} voteskip".format(partyId))
