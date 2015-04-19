@@ -19,15 +19,19 @@ class SmsBroker():
         arguments = None
         processedMessage = ""
         if len(messageParts) > 1:
-            arguments = messageParts[1]
+            arguments = messageParts[1:]
         if verb == 'register':
             processedMessage = self.registerUser(givenNumber, arguments)
+        if verb == 'request':
+            processedMessage = self.requestSong(givenNumber, arguments)
         if verb == 'vote':
             processedMessage = self.incrementVoteCount(givenNumber, arguments)
         if verb == 'playlist':
             processedMessage = self.textPlaylistToUser(givenNumber)
         if verb == 'togglePause':
             processedMessage = self.togglePause(givenNumber)
+        if verb == 'start':
+            processedMessage = self.startParty(givenNumber)
         if verb == 'voteskip':
             processedMessage = self.skipCurrentTrack(givenNumber)
         if verb == 'preview':
@@ -61,7 +65,8 @@ class SmsBroker():
         # Now insert a new user entry
         newUser = User.create(mobileNumber = phoneNumber, partyId = partyId, credit=10)
         newUser.save()
-        return "You have been successfully registered for the party"
+        return "You have been successfully registered for the party! To further personalise your experience, please login to Facebook! " \
+               "https://pyply.j.layershift.co.uk/facebooklogin"
 
     def decrementUserCredit(self, phoneNumber):
         # Mhhhh all this user stuff needs cleaning up
@@ -88,10 +93,12 @@ class SmsBroker():
     def togglePause(self, givenNumber):
         partyId = self.getPartyId(givenNumber)
         self.redisBroker.partyTogglePause(partyId)
+        return "Pause toggled"
 
     def skipCurrentTrack(self, givenNumber):
         partyId = self.getPartyId(givenNumber)
         self.redisBroker.voteSkip(partyId)
+        return "Track skip registered"
 
     def getUser(self, givenNumber):
         try:
@@ -123,7 +130,16 @@ class SmsBroker():
 
     helpText = """ Placeholder text for help. """
 
+    def startParty(self, givenNumber):
+        party = self.getPartyId(givenNumber)
+        self.redisBroker.sendPlaylistToParty(party)
+        return "Let's get this party started!"
+
+    def requestSong(self, givenNumber, arguments):
+        songTitle = " ".join(arguments)
+        spotifyMatches = self.mySpotipy.search(q=songTitle, type="track", market="GB")
+
 
 if __name__ == '__main__':
      underTest = SmsBroker()
-     underTest.sendTrackPreview('07432142620', '4')
+     underTest.requestSong()
