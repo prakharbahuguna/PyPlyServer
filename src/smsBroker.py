@@ -1,7 +1,7 @@
 __author__ = 'georgevanburgh'
 
 from databaseAccess import *
-import zeroMqBroker
+import redisBroker
 import spotipy
 from twilioBroker import TwilioBroker
 
@@ -10,8 +10,8 @@ class SmsBroker():
     def __init__(self):
         self.mySpotipy = spotipy.Spotify()
         self.twilioBroker = TwilioBroker()
-        if not zeroMqBroker.isInit():
-            zeroMqBroker.init()
+        if not redisBroker.isInit():
+            redisBroker.init()
 
     def processTextMessage(self, givenNumber, givenMessage):
         messageParts = givenMessage.split()
@@ -75,18 +75,18 @@ class SmsBroker():
             playlistEntry = Playlist.get(partyId = partyId, id = givenSong)
             playlistEntry.votes += 1
             playlistEntry.save()
-            zeroMqBroker.sendPlaylistToParty(partyId)
+            redisBroker.sendPlaylistToParty(partyId)
             return "Thank you for your vote"
         else:
             return "Sorry, you have insufficient credit to vote"
 
     def pauseParty(self, givenNumber):
         partyId = self.getPartyId(givenNumber)
-        zeroMqBroker.partyPauseTrack(partyId)
+        redisBroker.partyPauseTrack(partyId)
 
     def skipCurrentTrack(self, givenNumber):
         partyId = self.getPartyId(givenNumber)
-        zeroMqBroker.voteSkip(partyId)
+        redisBroker.voteSkip(partyId)
 
     def getUser(self, givenNumber):
         try:

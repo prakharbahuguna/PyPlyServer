@@ -4,3 +4,5 @@ pyzmq
 flask_oauthlib
 peewee
 twilio
+redis
+rq
