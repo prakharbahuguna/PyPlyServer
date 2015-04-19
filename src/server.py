@@ -152,7 +152,7 @@ def facebook_authorized(resp):
 @app.route('/trackPlayed/<trackId>/<partyId>')
 def markTrackAsPlayed(trackId, partyId):
     trackJustPlayed = Playlist.get(spotifyId=trackId, partyId = partyId)
-    newTrack = Playlist.create(spotifyId=trackJustPlayed.trackId, partyId=trackJustPlayed.partyId)
+    newTrack = Playlist.create(spotifyId=trackJustPlayed.spotifyId, partyId=trackJustPlayed.partyId)
     newTrack.save()
     trackJustPlayed.delete_instance()
     if smsbroker.redisBroker:
