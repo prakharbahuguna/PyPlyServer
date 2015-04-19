@@ -30,7 +30,7 @@ class RedisBroker:
         self.redisClient.rpush(self.topicName, "loadPlaylist {}".format(jsonList))
 
     def voteSkip(self, partyId):
-        self.redisClient.rpush(self.topicName, "{} voteskip".format(partyId))
+        self.redisClient.rpush(self.topicName, "{} skipVote".format(partyId))
 
 if __name__ == "__main__":
     redisTest = RedisBroker()
