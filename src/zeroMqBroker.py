@@ -3,6 +3,7 @@ __author__ = 'georgevanburgh'
 import zmq
 import json
 import time
+import threading
 from databaseAccess import *
 
 
@@ -35,6 +36,15 @@ def sendPlaylistToParty(partyID):
 
 def voteSkip(partyId):
     topicSocket.send_string("{} voteskip".format(partyId))
+
+class zmqThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+    def run(self):
+        while True:
+            sendPlaylistToParty("1234")
+            print "Sent message!"
+            time.sleep(10)
 
 if __name__ == "__main__":
     while True:
