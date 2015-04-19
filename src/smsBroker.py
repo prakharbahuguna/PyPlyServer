@@ -123,6 +123,7 @@ class SmsBroker():
         spotifyData = self.mySpotipy.track(spotifyId)
         trackUrl = spotifyData['preview_url']
         self.twilioBroker.playMp3ToUser(givenNumber, trackUrl)
+        return "Your preview will arrive shortly"
 
     def getUserCredits(self, givenNumber):
         user = User.get(mobileNumber = givenNumber)
