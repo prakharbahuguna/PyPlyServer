@@ -19,7 +19,7 @@ class RedisBroker:
         self.redisClient.rpush(self.topicName, message)
 
     def sendPlaylistToParty(self, partyID):
-        playlistToSend = Playlist.select().where(Playlist.partyId == partyID).order_by(Playlist.votes)
+        playlistToSend = Playlist.select().where(Playlist.partyId == partyID).order_by(Playlist.votes.desc())
         listToSend = []
 
         for song in playlistToSend:

@@ -46,7 +46,7 @@ class SmsBroker():
 
     def textPlaylistToUser(self, givenNumber):
         userParty = self.getPartyId(givenNumber)
-        playlist = Playlist.select().where(Playlist.partyId == userParty).order_by(Playlist.votes)
+        playlist = Playlist.select().where(Playlist.partyId == userParty).order_by(Playlist.votes.desc())
         toText = ""
         for item in playlist:
             #TODO: Convert Spotify URIs to Artist:Songname combos
