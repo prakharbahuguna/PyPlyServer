@@ -8,7 +8,6 @@ import smsBroker
 import json
 from userLikesBroker import UserLikesBroker
 from twilio import twiml
-import zeroMqBroker
 
 app = Flask(__name__)
 app.debug = True
