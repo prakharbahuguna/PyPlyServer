@@ -139,7 +139,6 @@ class SmsBroker():
         partyId = self.getPartyId(givenNumber)
         spotifyMatches = self.mySpotipy.search(q=arguments, type="track")
         track = spotifyMatches['tracks']['items'][0]
-        print track["name"]
         Playlist.create(partyId = partyId, spotifyId=track["uri"], votes = 0, voteskips = 0)
         return "Thanks - your song request has been added!"
 

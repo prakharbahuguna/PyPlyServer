@@ -149,6 +149,14 @@ def facebook_authorized(resp):
 
     return redirect(next_url)
 
+@app.route('/trackPlayed/<trackId>/<partyId>')
+def markTrackAsPlayed(trackId, partyId):
+    trackJustPlayed = Playlist.get(trackId=trackId, partyId = partyId)
+    newTrack = Playlist.create(trackId=trackJustPlayed.trackId, partyId=trackJustPlayed.partyId)
+    newTrack.save()
+    trackJustPlayed.delete_instance()
+    if smsbroker.redisBroker:
+        smsbroker.redisBroker.sendPlaylistToParty(partyId)
 
 @app.route('/party/<partyId>')
 def party(partyId):
