@@ -23,7 +23,7 @@ class SmsBroker():
         if verb == 'register':
             processedMessage = self.registerUser(givenNumber, arguments[0])
         if verb == 'request':
-            processedMessage = self.requestSong(givenNumber, arguments)
+            processedMessage = self.requestSong(givenNumber, " ".join(arguments))
         if verb == 'vote':
             processedMessage = self.incrementVoteCount(givenNumber, arguments[0])
         if verb == 'playlist':
@@ -137,8 +137,7 @@ class SmsBroker():
 
     def requestSong(self, givenNumber, arguments):
         partyId = self.getPartyId(givenNumber)
-        songTitle = "".join(arguments)
-        spotifyMatches = self.mySpotipy.search(q=songTitle, type="track")
+        spotifyMatches = self.mySpotipy.search(q=arguments, type="track")
         track = spotifyMatches['tracks']['items'][0]
         print track["name"]
         Playlist.create(partyId = partyId, spotifyId=track["uri"], votes = 0, voteskips = 0)
@@ -147,4 +146,4 @@ class SmsBroker():
 
 if __name__ == '__main__':
      underTest = SmsBroker()
-     underTest.requestSong("+447903120756", "American")
+     underTest.requestSong("+447903120756", "American Girl")
