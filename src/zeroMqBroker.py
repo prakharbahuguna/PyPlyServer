@@ -40,6 +40,7 @@ def voteSkip(partyId):
 class zmqThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
+        init()
     def run(self):
         while True:
             sendPlaylistToParty("1234")
