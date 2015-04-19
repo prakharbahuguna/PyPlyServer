@@ -31,8 +31,9 @@ def sendPlaylistToParty(partyID):
         listToSend.append(song.spotifyId)
 
     jsonList = json.dumps(listToSend, separators=(',', ':'))
-    print jsonList
+    #print jsonList
     #topicSocket.send_string("{} loadPlaylist {}".format(partyID, jsonList))
+    topicSocket.send_string("{} shoopdawoop".format(partyID))
 
 def voteSkip(partyId):
     topicSocket.send_string("{} voteskip".format(partyId))
