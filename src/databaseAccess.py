@@ -8,6 +8,7 @@ class User(peewee.Model):
     partyId = peewee.IntegerField()
     mobileNumber = peewee.CharField()
     credit = peewee.IntegerField()
+    fbUserID = peewee.CharField(null=True)
 
     class Meta:
         database = db
@@ -30,11 +31,11 @@ class UserLikes(peewee.Model):
 
 #UserLikes.create_table()
 
-# User.drop_table()
-# User.create_table()
-# Playlist.update()
-# myUser = User.create(partyId = 1, mobileNumber = 2)
-# myUser.save()
+#User.drop_table()
+#User.create_table()
+#Playlist.update()
+#myUser = User.create(partyId = 1234, mobileNumber = "07123456789", credit = 10, fbUserID="10153801451721040")
+#myUser.save()
 
 #for user in User.filter(partyId = 1):
 #    print user.mobileNumber

@@ -72,7 +72,7 @@ def spotifylogin():
     return spotify.authorize(callback=callback)
 
 
-@app.route('/login/authorized')
+@app.route('/spotify_authorized')
 def spotify_authorized():
     resp = spotify.authorized_response()
     if resp is None:
@@ -172,7 +172,6 @@ def playlist(party, plist_uri):
         newPlaylist.save()
 
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-
 
 if __name__ == '__main__':
     app.run()
