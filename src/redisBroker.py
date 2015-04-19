@@ -7,8 +7,6 @@ import time
 from databaseAccess import *
 
 
-
-
 class RedisBroker:
     topicName = "party"
 

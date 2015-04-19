@@ -12,8 +12,6 @@ from twilio import twiml
 app = Flask(__name__)
 app.debug = True
 app.secret_key = 'development'
-app.config['zmqThread'] = zeroMqBroker.zmqThread()
-app.config['zmqThread'].start()
 
 oauth = OAuth(app)
 apiUtils = APIUtils()
