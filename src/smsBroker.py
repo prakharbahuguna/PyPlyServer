@@ -26,8 +26,8 @@ class SmsBroker():
             processedMessage = self.incrementVoteCount(givenNumber, arguments)
         if verb == 'playlist':
             processedMessage = self.textPlaylistToUser(givenNumber)
-        if verb == 'pause':
-            processedMessage = self.pauseParty(givenNumber)
+        if verb == 'togglePause':
+            processedMessage = self.togglePause(givenNumber)
         if verb == 'voteskip':
             processedMessage = self.skipCurrentTrack(givenNumber)
         if verb == 'preview':
@@ -80,9 +80,9 @@ class SmsBroker():
         else:
             return "Sorry, you have insufficient credit to vote"
 
-    def pauseParty(self, givenNumber):
+    def togglePause(self, givenNumber):
         partyId = self.getPartyId(givenNumber)
-        self.redisBroker.partyPauseTrack(partyId)
+        self.redisBroker.partyTogglePause(partyId)
 
     def skipCurrentTrack(self, givenNumber):
         partyId = self.getPartyId(givenNumber)

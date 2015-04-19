@@ -13,8 +13,8 @@ class RedisBroker:
     def __init__(self):
         self.redisClient = Redis(host="redis92559-pyply.j.layershift.co.uk", password="O3KcaI9RRj")
 
-    def partyPauseTrack(self, partyId):
-        message = "{0} pause".format(partyId)
+    def partyTogglePause(self, partyId):
+        message = "{0} togglePause".format(partyId)
         print "Pushing {}".format(message)
         self.redisClient.rpush(self.topicName, message)
 
