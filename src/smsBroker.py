@@ -86,7 +86,7 @@ class SmsBroker():
             playlistEntry.votes += 1
             playlistEntry.save()
             self.redisBroker.sendPlaylistToParty(partyId)
-            return "Thank you for your vote"
+            return "Thank you for your vote. The current standing is:\n{}".format(self.textPlaylistToUser())
         else:
             return "Sorry, you have insufficient credit to vote"
 
@@ -147,4 +147,4 @@ class SmsBroker():
 
 if __name__ == '__main__':
      underTest = SmsBroker()
-     underTest.requestSong("+447903120756", "Supermassive Black Hole")
+     underTest.requestSong("+447903120756", "American")
