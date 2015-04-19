@@ -5,6 +5,7 @@ import redisBroker
 import spotipy
 from redisBroker import RedisBroker
 from twilioBroker import TwilioBroker
+from playlistUtils import PlaylistUtils
 
 class SmsBroker():
 
@@ -132,6 +133,8 @@ class SmsBroker():
 
     def startParty(self, givenNumber):
         party = self.getPartyId(givenNumber)
+        playlistUtils=PlaylistUtils()
+        playlistUtils.generatePlaylist(party)
         self.redisBroker.sendPlaylistToParty(party)
         return "Let's get this party started!"
 

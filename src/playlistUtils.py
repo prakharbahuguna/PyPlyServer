@@ -10,7 +10,7 @@ class PlaylistUtils:
     def __init__(self):
         self.baseURL="http://developer.echonest.com/api/v4/playlist/static?"
         self.api_key="S0QUTXZNEZ6GNVKST"
-        self.lastparams="&format=json&results=100&type=artist-radio&bucket=id:spotify&bucket=tracks"
+        self.lastparams="&format=json&results=20&type=artist-radio&bucket=id:spotify&bucket=tracks"
 
     def getArtistRadioPlaylistJSON(self,partyID):
         group = User.select().where(User.partyId == partyID)
@@ -44,7 +44,6 @@ class PlaylistUtils:
             newPlaylist = Playlist.create(spotifyId=uri, partyId=partyID, votes=0, voteskips=0)
             newPlaylist.save()
 
-
     def generatePlaylist(self,partyID):
         result = self.getArtistRadioPlaylistJSON(partyID)
 
@@ -59,5 +58,5 @@ class PlaylistUtils:
 
         self.savePlaylist(partyID,spotifyURIs)
 
-playlistUtils=PlaylistUtils()
-playlistUtils.generatePlaylist(1234)
+#playlistUtils=PlaylistUtils()
+#playlistUtils.generatePlaylist(1234)
