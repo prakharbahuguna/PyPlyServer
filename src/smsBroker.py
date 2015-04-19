@@ -136,10 +136,15 @@ class SmsBroker():
         return "Let's get this party started!"
 
     def requestSong(self, givenNumber, arguments):
-        songTitle = " ".join(arguments)
-        spotifyMatches = self.mySpotipy.search(q=songTitle, type="track", market="GB")
+        partyId = self.getPartyId(givenNumber)
+        songTitle = "".join(arguments)
+        spotifyMatches = self.mySpotipy.search(q=songTitle, type="track")
+        track = spotifyMatches['tracks']['items'][0]
+        print track["name"]
+        Playlist.create(partyId = partyId, spotifyId=track["uri"], votes = 0, voteskips = 0)
+        return "Thanks - your song request has been added!"
 
 
 if __name__ == '__main__':
      underTest = SmsBroker()
-     underTest.requestSong()
+     underTest.requestSong("+447903120756", "Supermassive Black Hole")
