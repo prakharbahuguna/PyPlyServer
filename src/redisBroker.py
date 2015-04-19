@@ -1,9 +1,9 @@
 __author__ = 'georgevanburgh'
 
-from redis import Redis
-from rq import Worker, Queue, Connection
 import json
-import time
+
+from redis import Redis
+
 from databaseAccess import *
 
 
